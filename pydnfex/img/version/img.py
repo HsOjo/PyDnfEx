@@ -48,7 +48,7 @@ class IMG:
         io.truncate()
         self._callback_before_save(io)
         # keep, version, img_count
-        IOHelper.write_struct(io, '<3i', 0, self._version, len(self._images))
+        IOHelper.write_struct(io, '<3i', self._keep, self._version, len(self._images))
         self._callback_before_images_save(io)
         self._callback_images_save(io)
         self._callback_after_images_save(io)

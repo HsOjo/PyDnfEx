@@ -31,13 +31,13 @@ class IMGFactory:
         if magic not in [IMG_MAGIC, IMG_MAGIC_OLD]:
             raise NotIMGFileException
 
+        images_size = 0
         if magic == IMG_MAGIC:
             # images_size without version,count,extra(color_board,sprites_list)...
             [images_size] = IOHelper.read_struct(io, 'i')
-        else:
+        elif magic == IMG_MAGIC_OLD:
             # unknown.
             [_] = IOHelper.read_struct(io, 'h')
-            images_size = 0
 
         # keep: 0
         [keep, version] = IOHelper.read_struct(io, '<2i')
