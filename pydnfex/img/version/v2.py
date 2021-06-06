@@ -45,8 +45,9 @@ class IMGv2(IMGv1):
 
         return size
 
-    def _callback_after_image_save(self, io, image):
-        pass
+    def _callback_images_save(self, io):
+        for image in self._images:
+            image.save(io)
 
     def _callback_after_images_save(self, io):
         for image in self._images:

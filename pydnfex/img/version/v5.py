@@ -83,6 +83,8 @@ class IMGv5(IMGv4):
         for sprites in self._sprites_list:
             io.write(sprites.zip_data)
 
+        super()._callback_after_images_save(io)
+
     def _build(self, image, **kwargs):
         if isinstance(image, SpriteZlibImage):
             l, t, r, b = image.left, image.top, image.right, image.bottom

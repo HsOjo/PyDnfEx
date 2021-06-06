@@ -36,7 +36,4 @@ class IMGv1(IMG):
     def _callback_images_save(self, io):
         for image in self._images:
             image.save(io)
-            self._callback_after_image_save(io, image)
-
-    def _callback_after_image_save(self, io, image):
-        io.write(image.data)
+            io.write(image.data)
