@@ -27,10 +27,9 @@ class IMGv1(IMG):
         IOHelper.write_struct(io, 'h', 0)
 
     @property
-    def images_header_size(self):
-        size = super().images_header_size
+    def _common_size(self):
         # magic, unknown
-        size += len(IMG_MAGIC_OLD) + 3
+        size = len(IMG_MAGIC_OLD) + 3
 
         return size
 

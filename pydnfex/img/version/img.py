@@ -98,7 +98,8 @@ class IMG:
 
     @property
     def file_size(self):
-        size = 0
+        size = self._common_size
+
         # keep, version, img_count
         size += 12
 
@@ -106,6 +107,10 @@ class IMG:
         size += self.images_data_size
 
         return size
+
+    @property
+    def _common_size(self):
+        return 0
 
     def build(self, image, **kwargs):
         if isinstance(image, ImageLink):

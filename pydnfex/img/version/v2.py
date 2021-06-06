@@ -19,12 +19,7 @@ class IMGv2(IMGv1):
     def _callback_after_images_open(self, images_size):
         io = self._io
 
-        # behind header.
-        if images_size != 0:
-            offset = images_size + 32
-        else:
-            offset = io.tell()
-
+        offset = io.tell()
         offset = self._callback_before_count_image_offset(offset)
 
         # count image offset.
@@ -44,10 +39,9 @@ class IMGv2(IMGv1):
         IOHelper.write_struct(io, 'i', self.images_header_size)
 
     @property
-    def images_header_size(self):
-        size = super().images_header_size
+    def _common_size(self):
         # magic, images_size
-        size += len(IMG_MAGIC) + 5
+        size = len(IMG_MAGIC) + 5
 
         return size
 

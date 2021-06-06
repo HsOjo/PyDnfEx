@@ -19,9 +19,11 @@ class IMGv5(IMGv4):
 
         super()._callback_before_images_open()
 
-        self._sprites_list = []
+        sprites_list = []
         for _ in range(sprites_count):
-            self._sprites_list.append(Sprites.open(io))
+            sprites_list.append(Sprites.open(io))
+
+        self._sprites_list = sprites_list
 
     def _callback_before_count_image_offset(self, offset):
         for sprites in self._sprites_list:
@@ -42,7 +44,7 @@ class IMGv5(IMGv4):
 
     @property
     def images_header_size(self):
-        size = super().images_header_size()
+        size = super().images_header_size
         for image in self._images:
             if isinstance(image, SpriteZlibImage):
                 # keep, map_index, left, top, right, bottom, rotate

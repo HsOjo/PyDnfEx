@@ -13,6 +13,7 @@ class ZlibImage(Image):
 
     def load(self, force=False):
         if super().load(force):
+            self._zip_data = self._data
             self._data = zlib.decompress(self._data)
             return True
 

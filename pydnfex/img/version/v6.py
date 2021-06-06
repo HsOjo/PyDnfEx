@@ -1,9 +1,10 @@
 from io import FileIO
 from typing import List
 
+from pydnfex.util import image as image_util
 from pydnfex.util.io_helper import IOHelper
 from .v2 import IMGv2
-from ..image import ColorBoard
+from ..image import ColorBoard, FormatConvertor
 
 
 class IMGv6(IMGv2):
@@ -46,3 +47,14 @@ class IMGv6(IMGv2):
         IOHelper.write_struct(io, 'i', len(self._color_boards))
         for color_board in self._color_boards:
             color_board.save(io)
+
+    def build(self, image, color_board=None, **kwargs):
+        return super().build(image, color_board=color_board, **kwargs)
+
+    def _build(self, image, color_board=None, **kwargs):
+        if color_board is None and len(self._color_boards) > 0:
+            color_board = self._color_boards[0]
+
+        data = FormatConvertor.to_raw_indexes(image.data, color_board.colors)
+        result = image_util.load_raw(data, image.w, image.h)
+        return result

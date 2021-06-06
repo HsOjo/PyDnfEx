@@ -1,12 +1,14 @@
 from pydnfex.hard_code import IMAGE_EXTRA_ZLIB_SPRITE
 from pydnfex.util.io_helper import IOHelper
-from .zlib import ZlibImage
+from ..image import Image
 
 
-class SpriteZlibImage(ZlibImage):
+class SpriteZlibImage(Image):
     def __init__(self, fmt):
         super().__init__(fmt)
         self.extra = IMAGE_EXTRA_ZLIB_SPRITE
+        # dummy data
+        self._data = b''
 
         self.keep = 0
         self.map_index = 0
@@ -18,8 +20,8 @@ class SpriteZlibImage(ZlibImage):
         # horizontal, vertical
         self.rotate = 0
 
-    def _open(self, io):
-        super()._open(io)
+    def open(self, io, **kwargs):
+        super().open(io)
 
         keep, map_index, lx, ly, rx, ry, rotate = IOHelper.read_struct(io, '<7i')
 
@@ -30,6 +32,8 @@ class SpriteZlibImage(ZlibImage):
         self.right = rx
         self.bottom = ry
         self.rotate = rotate
+
+        return self
 
     def save(self, io_header):
         super().save(io_header)

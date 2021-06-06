@@ -43,6 +43,7 @@ class Sprites:
     def load(self, force=False):
         if self._io and (force or not self.is_loaded):
             data = IOHelper.read_range(self._io, self._offset, self.data_size)
+            self._zip_data = data
             self._data = zlib.decompress(data)
             return True
 
