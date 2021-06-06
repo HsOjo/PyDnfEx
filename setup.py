@@ -15,7 +15,7 @@ setuptools.setup(
     author="HsOjo",
     author_email="hsojo@qq.com",
     keywords='python3 dnf',
-    description='''A data pack extract lib for dungeon & fighter.''',
+    description='''A data pack extract lib for Dungeon & Fighter.''',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/HsOjo/PyDnfEx/",

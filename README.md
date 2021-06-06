@@ -1,3 +1,3 @@
 # PyDnfEx
 
-* A data pack extract lib for dungeon & fighter.
+* A data pack extract lib for Dungeon & Fighter.
