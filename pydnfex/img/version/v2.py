@@ -19,7 +19,12 @@ class IMGv2(IMGv1):
     def _callback_after_images_open(self, images_size):
         io = self._io
 
-        offset = io.tell()
+        # behind header.
+        if self._version == IMG_VERSION_2:
+            offset = images_size + 32
+        else:
+            offset = io.tell()
+
         offset = self._callback_before_count_image_offset(offset)
 
         # count image offset.
