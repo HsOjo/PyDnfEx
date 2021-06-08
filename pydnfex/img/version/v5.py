@@ -1,7 +1,9 @@
 from io import FileIO
 from typing import List
 
+from pydnfex.hard_code import IMAGE_FORMATS_RAW
 from pydnfex.util.io_helper import IOHelper
+from .v2 import IMGv2
 from .v4 import IMGv4
 from ..image import Sprites, SpriteZlibImage
 
@@ -90,6 +92,8 @@ class IMGv5(IMGv4):
             l, t, r, b = image.left, image.top, image.right, image.bottom
             sprites = self._sprites_list[image.map_index]
             result = sprites.build_sprite((l, t, r, b), image.rotate)
+        elif image.size != 0 and image.format in IMAGE_FORMATS_RAW:
+            result = super(IMGv2, self)._build(image, **kwargs)
         else:
             result = super()._build(image, **kwargs)
 
