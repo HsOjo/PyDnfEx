@@ -17,9 +17,9 @@ class ImageLink:
         link = ImageLink(images, index)
         return link
 
-    def save(self, io_header):
+    def save(self, io):
         # format, link_index
-        IOHelper.write_struct(io_header, '<2i', IMAGE_FORMAT_LINK, self.index)
+        IOHelper.write_struct(io, '<2i', IMAGE_FORMAT_LINK, self.index)
 
     def set_image(self, image):
         if image in self._images:

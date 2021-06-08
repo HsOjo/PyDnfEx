@@ -113,7 +113,7 @@ class IMG:
 
     def build(self, image, **kwargs):
         if isinstance(image, ImageLink):
-            return self.build(image.index, **kwargs)
+            return self.build(image.image, **kwargs)
 
         return self._build(image, **kwargs)
 

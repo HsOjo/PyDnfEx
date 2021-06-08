@@ -33,8 +33,8 @@ class SpriteZlibImage(Image):
 
         return self
 
-    def save(self, io_header):
-        super().save(io_header)
+    def save(self, io):
+        super().save(io)
         # keep, map_index, left, top, right, bottom, rotate
-        IOHelper.write_struct(io_header, '<7i', self.keep, self.map_index,
+        IOHelper.write_struct(io, '<7i', self.keep, self.map_index,
                               self.left, self.top, self.right, self.bottom, self.rotate)

@@ -55,12 +55,15 @@ class Sprites:
 
     @property
     def data(self):
+        zip_data = self.zip_data
         if self._data is None and self.is_loaded:
-            self._data = zlib.decompress(self._zip_data)
+            self._data = zlib.decompress(zip_data)
         return self._data
 
     def set_data(self, data):
+        self.raw_size = len(data)
         self._data = data
+        self.data_size = 0
         self._zip_data = None
 
     def compress(self):
@@ -74,7 +77,7 @@ class Sprites:
     def zip_data(self):
         if not self.is_loaded:
             self.load()
-        if self._zip_data is None:
+        if self._zip_data is None and self._data:
             self.compress()
         return self._zip_data
 

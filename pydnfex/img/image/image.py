@@ -51,9 +51,9 @@ class Image:
         if self._io and (force or not self.is_loaded):
             self._data = IOHelper.read_range(self._io, self._offset, self._size)
 
-    def save(self, io_header):
+    def save(self, io):
         # format, extra, w, h, size, x, y, mw, mh
-        IOHelper.write_struct(io_header, '<9i', self.format, self.extra, self.w, self.h, self.size,
+        IOHelper.write_struct(io, '<9i', self.format, self.extra, self.w, self.h, self.size,
                               self.x, self.y, self.mw, self.mh)
 
     @property
@@ -68,6 +68,7 @@ class Image:
 
     def set_data(self, data):
         self._data = data
+        self._size = len(data)
 
     def from_image(self, image):
         if self.extra != IMAGE_EXTRA_NONE:
