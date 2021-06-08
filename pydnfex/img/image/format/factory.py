@@ -4,6 +4,10 @@ from .f4444 import Format4444
 from .f8888 import Format8888
 
 
+class ImageFormatException(Exception):
+    pass
+
+
 class FormatFactory:
     @staticmethod
     def instance(image_format):
@@ -13,6 +17,8 @@ class FormatFactory:
             IMAGE_FORMAT_8888: Format8888,
         }
 
-        cls = cls_format_map[image_format]
-        fmt = cls()
-        return fmt
+        cls = cls_format_map.get(image_format)
+        if cls is None:
+            raise ImageFormatException(image_format)
+
+        return cls()

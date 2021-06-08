@@ -1,5 +1,8 @@
-from pydnfex.hard_code import PIX_SIZE, IMAGE_EXTRA_NONE
+from pydnfex.hard_code import *
+from pydnfex.util import image as image_util
 from pydnfex.util.io_helper import IOHelper
+from .exception import ImageExtraException
+from .format import FormatConvertor
 
 
 class Image:
@@ -48,13 +51,10 @@ class Image:
     def load(self, force=False):
         if self._io and (force or not self.is_loaded):
             self._data = IOHelper.read_range(self._io, self._offset, self._size)
-            return True
 
-        return False
-
-    def save(self, io_header):
+    def save(self, io):
         # format, extra, w, h, size, x, y, mw, mh
-        IOHelper.write_struct(io_header, '<9i', self.format, self.extra, self.w, self.h, self.size,
+        IOHelper.write_struct(io, '<9i', self.format, self.extra, self.w, self.h, self.size,
                               self.x, self.y, self.mw, self.mh)
 
     @property
@@ -66,3 +66,22 @@ class Image:
         if not self.is_loaded:
             self.load()
         return self._data
+
+    def set_data(self, data):
+        self._data = data
+        self._size = len(data)
+
+    def from_image(self, image):
+        if self.extra not in [IMAGE_EXTRA_NONE, IMAGE_EXTRA_ZLIB]:
+            raise ImageExtraException(self.extra)
+
+        self.set_data(FormatConvertor.from_image(image, self.format))
+
+    def convert(self, image_format):
+        if self.extra not in [IMAGE_EXTRA_NONE, IMAGE_EXTRA_ZLIB]:
+            raise ImageExtraException(self.extra)
+
+        raw_data = FormatConvertor.to_raw(self.data, self.format)
+        image = image_util.load_raw(raw_data, self.w, self.h)
+        [data, w, h] = FormatConvertor.from_image(image, image_format)
+        self._data = data

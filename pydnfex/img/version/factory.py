@@ -11,6 +11,10 @@ class NotIMGFileException(Exception):
     pass
 
 
+class IMGVersionException(Exception):
+    pass
+
+
 class IMGFactory:
     @staticmethod
     def instance(version):
@@ -22,7 +26,10 @@ class IMGFactory:
             IMG_VERSION_6: IMGv6,
         }
 
-        cls = cls_version_map[version]
+        cls = cls_version_map.get(version)
+        if cls is None:
+            raise IMGVersionException(version)
+
         return cls()
 
     @staticmethod

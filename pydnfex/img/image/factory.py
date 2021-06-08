@@ -1,16 +1,9 @@
 from pydnfex.hard_code import *
 from pydnfex.util.io_helper import IOHelper
+from .exception import *
 from .extra import ZlibImage, SpriteZlibImage
 from .image import Image
 from .link import ImageLink
-
-
-class ImageFormatException(Exception):
-    pass
-
-
-class ImageExtraException(Exception):
-    pass
 
 
 class ImageFactory:
