@@ -42,12 +42,7 @@ class Sprites:
 
     def load(self, force=False):
         if self._io and (force or not self.is_loaded):
-            data = IOHelper.read_range(self._io, self._offset, self.data_size)
-            self._zip_data = data
-            self._data = zlib.decompress(data)
-            return True
-
-        return False
+            self._zip_data = IOHelper.read_range(self._io, self._offset, self.data_size)
 
     def save(self, io):
         self.compress()
@@ -56,13 +51,17 @@ class Sprites:
 
     @property
     def is_loaded(self):
-        return self._data is not None
+        return self._zip_data is not None
 
     @property
     def data(self):
-        if not self.is_loaded:
-            self.load()
+        if self._data is None and self.is_loaded:
+            self._data = zlib.decompress(self._zip_data)
         return self._data
+
+    def set_data(self, data):
+        self._data = data
+        self._zip_data = None
 
     def compress(self):
         data = self.data
@@ -73,6 +72,8 @@ class Sprites:
 
     @property
     def zip_data(self):
+        if not self.is_loaded:
+            self.load()
         if self._zip_data is None:
             self.compress()
         return self._zip_data

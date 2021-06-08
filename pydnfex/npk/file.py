@@ -25,6 +25,10 @@ class File:
                 size = -1
         self._size = size
 
+    def set_data(self, data):
+        self._data = data
+        self._size = len(data)
+
     @staticmethod
     def open(io):
         offset, size = IOHelper.read_struct(io, '<2i')

@@ -2,7 +2,7 @@ from typing import List
 
 from pydnfex.util import image as image_util
 from pydnfex.util.io_helper import IOHelper
-from ..image import Image, ImageLink, ZlibImage, FormatConvertor
+from ..image import Image, ImageLink, ZlibImage, FormatConvertor, SpriteZlibImage
 
 
 class IMG:
@@ -84,10 +84,9 @@ class IMG:
     def images_data_size(self):
         size = 0
         for image in self._images:
-            if isinstance(image, ImageLink):
+            if type(image) in [ImageLink, SpriteZlibImage]:
                 continue
-
-            if isinstance(image, ZlibImage):
+            elif isinstance(image, ZlibImage):
                 data = image.zip_data
             else:
                 data = image.data

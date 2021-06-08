@@ -7,8 +7,6 @@ class SpriteZlibImage(Image):
     def __init__(self, fmt):
         super().__init__(fmt)
         self.extra = IMAGE_EXTRA_ZLIB_SPRITE
-        # dummy data
-        self._data = b''
 
         self.keep = 0
         self.map_index = 0

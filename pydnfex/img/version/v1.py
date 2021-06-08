@@ -3,6 +3,7 @@ from io import SEEK_CUR
 from pydnfex.hard_code import IMG_MAGIC_OLD
 from pydnfex.util.io_helper import IOHelper
 from .img import IMG
+from .. import ImageLink
 from ..image import ImageFactory
 
 
@@ -20,6 +21,11 @@ class IMGv1(IMG):
             io.seek(image.size, SEEK_CUR)
 
         self._images = images
+
+    def _callback_after_images_open(self, **kwargs):
+        for image in self._images:
+            if isinstance(image, ImageLink):
+                image.load_image()
 
     def _callback_before_save(self, io):
         IOHelper.write_ascii_string(io, IMG_MAGIC_OLD)

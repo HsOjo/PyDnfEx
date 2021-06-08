@@ -5,7 +5,11 @@ from pydnfex.util.io_helper import IOHelper
 class ImageLink:
     def __init__(self, images, index):
         self._images = images  # type: list
-        self._image = self._images[index - 1]
+        self._index = index
+        self._image = None
+
+    def load_image(self):
+        self._image = self._images[self.index - 1]
 
     @staticmethod
     def open(io, images, **kwargs):
@@ -26,6 +30,8 @@ class ImageLink:
 
     @property
     def index(self):
+        if self._image is None:
+            return self._index
         return self._images.index(self._image) + 1
 
     @property

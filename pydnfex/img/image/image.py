@@ -1,4 +1,6 @@
 from pydnfex.hard_code import PIX_SIZE, IMAGE_EXTRA_NONE
+from pydnfex.img.image import FormatConvertor
+from pydnfex.img.image.factory import ImageExtraException
 from pydnfex.util.io_helper import IOHelper
 
 
@@ -48,9 +50,6 @@ class Image:
     def load(self, force=False):
         if self._io and (force or not self.is_loaded):
             self._data = IOHelper.read_range(self._io, self._offset, self._size)
-            return True
-
-        return False
 
     def save(self, io_header):
         # format, extra, w, h, size, x, y, mw, mh
@@ -66,3 +65,12 @@ class Image:
         if not self.is_loaded:
             self.load()
         return self._data
+
+    def set_data(self, data):
+        self._data = data
+
+    def from_image(self, image):
+        if self.extra != IMAGE_EXTRA_NONE:
+            raise ImageExtraException(self.extra)
+
+        self.set_data(FormatConvertor.from_image(image, self.format))
