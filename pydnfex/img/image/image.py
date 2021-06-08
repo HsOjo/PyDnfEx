@@ -1,4 +1,5 @@
-from pydnfex.hard_code import PIX_SIZE, IMAGE_EXTRA_NONE
+from pydnfex.hard_code import *
+from pydnfex.util import image as image_util
 from pydnfex.util.io_helper import IOHelper
 from .exception import ImageExtraException
 from .format import FormatConvertor
@@ -71,7 +72,16 @@ class Image:
         self._size = len(data)
 
     def from_image(self, image):
-        if self.extra != IMAGE_EXTRA_NONE:
+        if self.extra not in [IMAGE_EXTRA_NONE, IMAGE_EXTRA_ZLIB]:
             raise ImageExtraException(self.extra)
 
         self.set_data(FormatConvertor.from_image(image, self.format))
+
+    def convert(self, image_format):
+        if self.extra not in [IMAGE_EXTRA_NONE, IMAGE_EXTRA_ZLIB]:
+            raise ImageExtraException(self.extra)
+
+        raw_data = FormatConvertor.to_raw(self.data, self.format)
+        image = image_util.load_raw(raw_data, self.w, self.h)
+        [data, w, h] = FormatConvertor.from_image(image, image_format)
+        self._data = data
