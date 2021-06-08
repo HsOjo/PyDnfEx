@@ -19,7 +19,10 @@ class File:
 
     def set_size(self, size=None):
         if size is None:
-            size = self.data_size
+            if self.is_loaded:
+                size = self.data_size
+            else:
+                size = -1
         self._size = size
 
     @staticmethod
