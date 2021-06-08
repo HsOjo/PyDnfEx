@@ -33,7 +33,7 @@ class NPK:
         for f in self._files:
             f.load()
 
-    def save(self, io=None):
+    def save(self, io=None, group_by_md5=True):
         files = self._files
 
         # clean file.
@@ -48,10 +48,10 @@ class NPK:
             # count file offset.
             # magic(16) + count(4) + info(264 * n) + hash(32)
             offset = 52 + count * 264
-
-            for file_ in files:
-                file_.save(io_header, offset, io)
-                offset += file_.data_size
+            if group_by_md5:
+                self._callback_save_files_group_by_md5(offset, io_header, io)
+            else:
+                self._callback_save_files(offset, io_header, io)
 
             header_data = IOHelper.read_range(io_header)
 
@@ -61,10 +61,30 @@ class NPK:
         # write hash.
         io.write(hashlib.sha256(header_data[:len(header_data) // 17 * 17]).digest())
 
+    def _callback_save_files_group_by_md5(self, offset, io_header, io):
+        files = self._files
+
+        files_offset = {}
+        for file in files:
+            md5 = file.md5
+            file_offset = files_offset.get(md5)
+            if file_offset is None:
+                file_offset = files_offset[md5] = offset
+                offset += file.data_size
+                file.save(io_header, file_offset, io)
+            else:
+                file.save(io_header, file_offset)
+
+    def _callback_save_files(self, offset, io_header, io):
+        files = self._files
+        for file in files:
+            file.save(io_header, offset, io)
+            offset += file.data_size
+
     def file_by_name(self, name):
-        for file_ in self._files:
-            if name == file_.name:
-                return file_
+        for file in self._files:
+            if name == file.name:
+                return file
 
     @property
     def files(self):

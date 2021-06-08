@@ -1,3 +1,5 @@
+import hashlib
+
 from pydnfex.hard_code import NPK_FILENAME_DECORD_FLAG
 from pydnfex.util import common
 from pydnfex.util.io_helper import IOHelper
@@ -11,10 +13,14 @@ class File:
         self._size = 0  # type: int
         self._data = data  # type: bytes
 
-    def set_io_info(self, offset, size, io=None):
+    def set_io_info(self, offset, io=None):
         self._offset = offset
-        self._size = size
         self._io = io
+
+    def set_size(self, size=None):
+        if size is None:
+            size = self.data_size
+        self._size = size
 
     @staticmethod
     def open(io):
@@ -27,11 +33,12 @@ class File:
             name = name_data[:name_data.find(b'\x00')].decode('euc_kr', errors='ignore')
 
         file = File(name)
-        file.set_io_info(offset, size, io)
+        file.set_io_info(offset, io)
+        file.set_size(size)
 
         return file
 
-    def save(self, io_header, offset, io):
+    def save(self, io_header, offset, io=None):
         IOHelper.write_struct(io_header, '<2i', offset, self._size)
 
         name_data = self.name
@@ -42,8 +49,9 @@ class File:
 
         io_header.write(name_data)
 
-        io.seek(offset)
-        io.write(self.data)
+        if io:
+            io.seek(offset)
+            io.write(self.data)
 
     @property
     def data(self):
@@ -51,10 +59,13 @@ class File:
             self.load()
         return self._data
 
-    def load(self, force=False, size=None):
+    @property
+    def md5(self):
+        return hashlib.md5(self.data).hexdigest()
+
+    def load(self, force=False):
         if self._io and (force or not self.is_loaded):
-            size = self._size if size is None else size
-            self._data = IOHelper.read_range(self._io, self._offset, size)
+            self._data = IOHelper.read_range(self._io, self._offset, self._size)
             return True
 
         return False
@@ -62,10 +73,6 @@ class File:
     @property
     def is_loaded(self):
         return self._data is not None
-
-    @property
-    def offset(self):
-        return self._offset
 
     @property
     def size(self):
