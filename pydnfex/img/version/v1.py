@@ -3,8 +3,7 @@ from io import SEEK_CUR
 from pydnfex.hard_code import IMG_MAGIC_OLD
 from pydnfex.util.io_helper import IOHelper
 from .img import IMG
-from .. import ImageLink
-from ..image import ImageFactory
+from .. import ImageLink, ImageFactory
 
 
 class IMGv1(IMG):

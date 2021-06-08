@@ -1,7 +1,7 @@
 from pydnfex.hard_code import PIX_SIZE, IMAGE_EXTRA_NONE
-from pydnfex.img.image import FormatConvertor
-from pydnfex.img.image.factory import ImageExtraException
 from pydnfex.util.io_helper import IOHelper
+from .exception import ImageExtraException
+from .format import FormatConvertor
 
 
 class Image:
