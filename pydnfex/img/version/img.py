@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 from pydnfex.util import image as image_util
 from pydnfex.util.io_helper import IOHelper
@@ -10,7 +10,7 @@ class IMG:
         self._io = None
         self._keep = 0
         self._version = 0
-        self._images = []  # type: List[Image]
+        self._images = []  # type: List[Union[Image, ImageLink, ZlibImage, SpriteZlibImage]]
 
     def open(self, io, version, images_size, keep):
         self._io = io
@@ -113,7 +113,7 @@ class IMG:
 
     def build(self, image, **kwargs):
         if isinstance(image, ImageLink):
-            return self.build(image.image, **kwargs)
+            return self.build(image.final_image, **kwargs)
 
         return self._build(image, **kwargs)
 
@@ -122,3 +122,7 @@ class IMG:
         result = image_util.load_raw(data, image.w, image.h)
 
         return result
+
+    def image_by_index(self, index):
+        if 0 <= index < len(self._images):
+            return self._images[index]

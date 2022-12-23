@@ -21,7 +21,7 @@ class IMGv1(IMG):
 
         self._images = images
 
-    def _callback_after_images_open(self, **kwargs):
+    def _callback_after_images_open(self, images_size):
         for image in self._images:
             if isinstance(image, ImageLink):
                 image.load_image()

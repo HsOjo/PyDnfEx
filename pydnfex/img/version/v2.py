@@ -17,7 +17,7 @@ class IMGv2(IMGv1):
         self._images = images
 
     def _callback_after_images_open(self, images_size):
-        super()._callback_after_images_open()
+        super()._callback_after_images_open(images_size)
         io = self._io
 
         # behind header.

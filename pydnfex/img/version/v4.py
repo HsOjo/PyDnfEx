@@ -1,6 +1,8 @@
 from pydnfex.util import image as image_util
 from .v2 import IMGv2
 from ..image import ColorBoard, FormatConvertor
+from ..image.exception import ImageExtraException
+from ...hard_code import IMAGE_EXTRA_ZLIB, IMAGE_EXTRA_NONE, IMAGE_FORMAT_8888
 
 
 class IMGv4(IMGv2):
@@ -33,7 +35,11 @@ class IMGv4(IMGv2):
         if color_board is None:
             color_board = self._color_board
 
-        data = FormatConvertor.to_raw_indexes(image.data, color_board.colors)
+        if image.extra == IMAGE_EXTRA_ZLIB and len(color_board.colors):
+            data = FormatConvertor.to_raw_indexes(image.data, color_board.colors)
+        else:
+            data = FormatConvertor.to_raw(image.data, image.format)
+
         result = image_util.load_raw(data, image.w, image.h)
 
         return result

@@ -86,6 +86,10 @@ class NPK:
             if name == file.name:
                 return file
 
+    def file_by_index(self, index):
+        if 0 <= index < len(self._files):
+            return self._files[index]
+
     @property
     def files(self):
         return self._files

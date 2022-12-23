@@ -40,7 +40,7 @@ class IMGFactory:
 
         images_size = 0
         if magic == IMG_MAGIC:
-            # images_size without version,count,extra(color_board,sprites_list)...
+            # images_size without version,count,extra(color_board,sprites)...
             [images_size] = IOHelper.read_struct(io, 'i')
         elif magic == IMG_MAGIC_OLD:
             # unknown.

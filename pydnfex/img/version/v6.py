@@ -58,3 +58,7 @@ class IMGv6(IMGv2):
         data = FormatConvertor.to_raw_indexes(image.data, color_board.colors)
         result = image_util.load_raw(data, image.w, image.h)
         return result
+
+    def color_board_by_index(self, index):
+        if 0 <= index < len(self._color_boards):
+            return self._color_boards[index]

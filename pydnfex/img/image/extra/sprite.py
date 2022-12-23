@@ -9,7 +9,7 @@ class SpriteZlibImage(Image):
         self.extra = IMAGE_EXTRA_ZLIB_SPRITE
 
         self.keep = 0
-        self.map_index = 0
+        self.sprite_index = 0
         self.left = 0
         self.top = 0
         self.right = 0
@@ -21,10 +21,10 @@ class SpriteZlibImage(Image):
     def open(self, io, **kwargs):
         super().open(io)
 
-        keep, map_index, lx, ly, rx, ry, rotate = IOHelper.read_struct(io, '<7i')
+        keep, sprite_index, lx, ly, rx, ry, rotate = IOHelper.read_struct(io, '<7i')
 
         self.keep = keep
-        self.map_index = map_index
+        self.sprite_index = sprite_index
         self.left = lx
         self.top = ly
         self.right = rx
@@ -35,6 +35,6 @@ class SpriteZlibImage(Image):
 
     def save(self, io):
         super().save(io)
-        # keep, map_index, left, top, right, bottom, rotate
-        IOHelper.write_struct(io, '<7i', self.keep, self.map_index,
+        # keep, sprite_index, left, top, right, bottom, rotate
+        IOHelper.write_struct(io, '<7i', self.keep, self.sprite_index,
                               self.left, self.top, self.right, self.bottom, self.rotate)
