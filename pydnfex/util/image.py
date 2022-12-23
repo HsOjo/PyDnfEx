@@ -13,7 +13,7 @@ def load_dds(data, box=None, rotate=0):
         if rotate == 1:
             image = image.transpose(Image.ROTATE_90)
 
-    return image
+        return image.copy()
 
 
 def load_raw(data, w, h, rotate=0):
