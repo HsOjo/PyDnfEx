@@ -122,3 +122,7 @@ class IMG:
         result = image_util.load_raw(data, image.w, image.h)
 
         return result
+
+    def image_by_index(self, index):
+        if 0 <= index < len(self._images):
+            return self._images[index]

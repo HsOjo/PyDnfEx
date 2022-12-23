@@ -94,3 +94,7 @@ class IMGv5(IMGv4):
             result = super()._build(image, **kwargs)
 
         return result
+
+    def sprite_by_index(self, index):
+        if 0 <= index < len(self._sprites):
+            return self._sprites[index]
