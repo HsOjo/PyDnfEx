@@ -3,10 +3,11 @@ import zlib
 from pydnfex.hard_code import IMAGE_FORMATS_DDS
 from pydnfex.img.image.format import FormatConvertor
 from pydnfex.util import image as image_util
+from pydnfex.util.common import zlib_decompress
 from pydnfex.util.io_helper import IOHelper
 
 
-class Sprites:
+class Sprite:
     def __init__(self):
         self._io = None
         self._offset = 0
@@ -29,20 +30,21 @@ class Sprites:
     def open(io):
         keep, fmt, index, data_size, raw_size, w, h = IOHelper.read_struct(io, '<7i')
 
-        sprites = Sprites()
-        sprites.keep = keep
-        sprites.format = fmt
-        sprites.index = index
-        sprites.data_size = data_size
-        sprites.raw_size = raw_size
-        sprites.w = w
-        sprites.h = h
+        sprite = Sprite()
+        sprite.keep = keep
+        sprite.format = fmt
+        sprite.index = index
+        sprite.data_size = data_size
+        sprite.raw_size = raw_size
+        sprite.w = w
+        sprite.h = h
 
-        return sprites
+        return sprite
 
     def load(self, force=False):
         if self._io and (force or not self.is_loaded):
             self._zip_data = IOHelper.read_range(self._io, self._offset, self.data_size)
+            self._data = zlib_decompress(self._zip_data)
 
     def save(self, io):
         self.compress()
@@ -51,13 +53,12 @@ class Sprites:
 
     @property
     def is_loaded(self):
-        return self._zip_data is not None
+        return self._data is not None
 
     @property
     def data(self):
-        zip_data = self.zip_data
-        if self._data is None and self.is_loaded:
-            self._data = zlib.decompress(zip_data)
+        if not self.is_loaded:
+            self.load()
         return self._data
 
     def set_data(self, data):
@@ -81,17 +82,18 @@ class Sprites:
             self.compress()
         return self._zip_data
 
-    def build_sprite(self, box=None, rotate=0):
+    def build(self, box=None, rotate=0):
         data = self.data
 
         if self.format in IMAGE_FORMATS_DDS:
             image = image_util.load_dds(data, box, rotate)
         else:
-            data = FormatConvertor.to_raw_crop(data, self.format, self.w, box)
-            if box is not None:
+            if box:
+                data = FormatConvertor.to_raw_crop(data, self.format, self.w, box)
                 [l, t, r, b] = box
                 w, h = r - l, b - t
             else:
+                data = FormatConvertor.to_raw(data, self.format)
                 w, h = self.w, self.h
             image = image_util.load_raw(data, w, h, rotate)
 

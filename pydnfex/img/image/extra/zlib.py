@@ -1,6 +1,7 @@
 import zlib
 
 from pydnfex.hard_code import IMAGE_EXTRA_ZLIB
+from pydnfex.util.common import zlib_decompress
 from ..image import Image
 
 
@@ -14,7 +15,7 @@ class ZlibImage(Image):
     def load(self, force=False):
         super().load(force)
         self._zip_data = self._data
-        self._data = None
+        self._data = zlib_decompress(self._zip_data)
 
     def compress(self):
         data = zlib.compress(self.data)
@@ -33,17 +34,6 @@ class ZlibImage(Image):
         if self._zip_data is None and self._data:
             self.compress()
         return self._zip_data
-
-    @property
-    def data(self):
-        zip_data = self.zip_data
-        if self._data is None and self.is_loaded:
-            self._data = zlib.decompress(zip_data)
-        return self._data
-
-    @property
-    def is_loaded(self):
-        return self._zip_data is not None
 
     def save(self, io):
         self.compress()
